@@ -8,5 +8,5 @@ Vcs-Git: git://github.com/varnish/libvmod-geoip.git
 
 Package: libvmod-geoip
 Architecture: any
-Depends: varnish, geoip-database, ${misc:Depends}
+Depends: varnish, geoip-database, ${shlibs:Depends}, ${misc:Depends}
 Description: Varnish GeoIP Lookup Module
