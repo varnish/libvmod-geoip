@@ -157,7 +157,7 @@ In your VCL you could then use this vmod along the following lines::
         
         import geoip;
 
-        sub vcl_req {
+        sub vcl_recv {
                 # This sets req.http.X-Country-Code to the country code
                 # associated with the client IP address
                 set req.http.X-Country-Code = geoip.country_code(client.ip);
