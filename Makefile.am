@@ -7,7 +7,7 @@ DISTCHECK_CONFIGURE_FLAGS = \
 
 doc_DATA = README.rst LICENSE
 dist_man_MANS = vmod_geoip.3
-EXTRA_DIST = README.rst LICENSE vmod-geoip.spec debian
+EXTRA_DIST = README.rst LICENSE CHANGES.rst
 
 MAINTAINERCLEANFILES = $(dist_man_MANS)
 
