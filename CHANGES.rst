@@ -1,8 +1,8 @@
 
 This is a running log of changes to libvmod-geoip.
 
-libvmod-geoip 1.0.1 (unreleased)
--------------------------------
+libvmod-geoip 1.0.1 (2016-03-14)
+--------------------------------
 
 * Adopted by Varnish Software.
 
@@ -14,11 +14,10 @@ libvmod-geoip 1.0.1 (unreleased)
 
 This release was tested with Varnish Cache 4.1.2.
 
-
 libvmod-geoip 1.0 (2011-09-26)
 ------------------------------
 
-This is libvmod-geoip. Originally written by Hauke Lampe.
+This is libvmod-geoip, originally written by Hauke Lampe.
 
 Source code: https://github.com/lampeh/libvmod-geoip
 
