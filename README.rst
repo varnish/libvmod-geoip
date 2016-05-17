@@ -22,7 +22,7 @@ DESCRIPTION
 This Varnish module exports functions to look up GeoIP country codes.
 Requires GeoIP library (on Debian install libgeoip-dev)
 
-Inspired by http://drcarter.info/2010/07/another-way-to-link-varnish-and-maxmind-geoip/
+Inspired by https://vrobert.fr/2010/07/another-way-to-link-varnish-and-maxmind-geoip/
 
 
 FUNCTIONS
