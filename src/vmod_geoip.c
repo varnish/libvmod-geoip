@@ -85,25 +85,32 @@ vmod_ip_country_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
 	return (vmod_country_name(ctx, pp, VRT_IP_string(ctx, ip)));
 }
 
+static const char *
+vmod_region_name_by_addr(GeoIP *gi, const char *ip)
+{
+	GeoIPRegion *gir;
+	const char *region = NULL;
+
+	gir = GeoIP_region_by_addr(gi, ip);
+	if (gir == NULL)
+		return (NULL);
+
+	region = GeoIP_region_name_by_code(gir->country_code, gir->region);
+	GeoIPRegion_delete(gir);
+	return (region);
+}
+
 VCL_STRING
 vmod_region_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
     VCL_STRING ip)
 {
-	GeoIPRegion *gir;
 	const char *region = NULL;
 
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 	AN(pp->priv);
 
-	if (ip) {
-		if ((gir = GeoIP_region_by_addr((GeoIP *)pp->priv, ip))) {
-			region =
-			    GeoIP_region_name_by_code(gir->country_code,
-			    gir->region);
-			// TODO: is gir * a local copy or the actual record?
-			GeoIPRegion_delete(gir);
-		}
-	}
+	if (ip)
+		region = vmod_region_name_by_addr((GeoIP *)pp->priv, ip);
 
 	return (WS_Copy(ctx->ws, (region ? region : GI_UNKNOWN_STRING), -1));
 }
