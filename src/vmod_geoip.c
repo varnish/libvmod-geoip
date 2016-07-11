@@ -3,7 +3,7 @@
  * GeoIP API: http://www.maxmind.com/app/c
  *
  * See file README.rst for usage instructions
- * 
+ *
  * This code is licensed under a MIT-style License, see file LICENSE
 */
 
@@ -20,26 +20,23 @@
 // The default string in case the GeoIP lookup fails
 #define GI_UNKNOWN_STRING "Unknown"
 
-static void
-init_priv(struct vmod_priv *pp)
-{
-	// The README says:
-	// If GEOIP_MMAP_CACHE doesn't work on a 64bit machine, try adding
-	// the flag "MAP_32BIT" to the mmap call. MMAP is not avail for WIN32.
-	pp->priv = GeoIP_new(GEOIP_MMAP_CACHE);
-	AN(pp->priv);
-	pp->free = (vmod_priv_free_f *)GeoIP_delete;
-	GeoIP_set_charset((GeoIP *)pp->priv, GEOIP_CHARSET_UTF8);
-}
-
 int __match_proto__(vmod_event_f)
 vmod_init(struct vmod_priv *pp, const struct VCL_conf *vcl)
 {
 
-	(void)vcl;
+	CHECK_OBJ_NOTNULL(vcl, VCL_CONF_MAGIC);
 
-	if (!pp->priv)
-		init_priv(pp);
+	if (pp->priv == NULL) {
+		/* The README says:
+		 * If GEOIP_MMAP_CACHE doesn't work on a 64bit machine, try
+		 * adding * the flag "MAP_32BIT" to the mmap call. MMAP is not
+		 * avail for WIN32.
+		 */
+		pp->priv = GeoIP_new(GEOIP_MMAP_CACHE);
+		AN(pp->priv);
+		pp->free = (vmod_priv_free_f *)GeoIP_delete;
+		GeoIP_set_charset((GeoIP *)pp->priv, GEOIP_CHARSET_UTF8);
+	}
 
 	return (0);
 }
@@ -50,6 +47,7 @@ vmod_country_code(const struct vrt_ctx *ctx, struct vmod_priv *pp,
 {
 	const char *country = NULL;
 
+	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 	AN(pp->priv);
 
 	if (ip)
@@ -71,6 +69,7 @@ vmod_country_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
 {
 	const char *country = NULL;
 
+	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 	AN(pp->priv);
 
 	if (ip)
@@ -93,6 +92,7 @@ vmod_region_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
 	GeoIPRegion *gir;
 	const char *region = NULL;
 
+	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 	AN(pp->priv);
 
 	if (ip) {
