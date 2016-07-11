@@ -1,4 +1,5 @@
 AM_CPPFLAGS = @VMOD_INCLUDES@
+AM_CFLAGS = -Wall -Wextra -Werror
 
 vmoddir = @VMOD_DIR@
 vmod_LTLIBRARIES = libvmod_geoip.la
