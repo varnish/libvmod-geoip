@@ -17,9 +17,6 @@
 
 #include "vcc_if.h"
 
-// The default string in case the GeoIP lookup fails
-#define GI_UNKNOWN_STRING "Unknown"
-
 int __match_proto__(vmod_event_f)
 vmod_init(struct vmod_priv *pp, const struct VCL_conf *vcl)
 {
@@ -41,50 +38,6 @@ vmod_init(struct vmod_priv *pp, const struct VCL_conf *vcl)
 	return (0);
 }
 
-VCL_STRING
-vmod_country_code(const struct vrt_ctx *ctx, struct vmod_priv *pp,
-    VCL_STRING ip)
-{
-	const char *country = NULL;
-
-	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
-	AN(pp->priv);
-
-	if (ip)
-		country = GeoIP_country_code_by_addr((GeoIP *)pp->priv, ip);
-
-	return (WS_Copy(ctx->ws, (country ? country : GI_UNKNOWN_STRING), -1));
-}
-
-VCL_STRING
-vmod_ip_country_code(const struct vrt_ctx *ctx, struct vmod_priv *pp,
-    VCL_IP ip)
-{
-	return (vmod_country_code(ctx, pp, VRT_IP_string(ctx, ip)));
-}
-
-VCL_STRING
-vmod_country_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
-    VCL_STRING ip)
-{
-	const char *country = NULL;
-
-	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
-	AN(pp->priv);
-
-	if (ip)
-		country = GeoIP_country_name_by_addr((GeoIP *)pp->priv, ip);
-
-	return (WS_Copy(ctx->ws, (country ? country : GI_UNKNOWN_STRING), -1));
-}
-
-VCL_STRING
-vmod_ip_country_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
-    VCL_IP ip)
-{
-	return (vmod_country_name(ctx, pp, VRT_IP_string(ctx, ip)));
-}
-
 static const char *
 vmod_region_name_by_addr(GeoIP *gi, const char *ip)
 {
@@ -100,24 +53,30 @@ vmod_region_name_by_addr(GeoIP *gi, const char *ip)
 	return (region);
 }
 
-VCL_STRING
-vmod_region_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
-    VCL_STRING ip)
-{
-	const char *region = NULL;
-
-	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
-	AN(pp->priv);
-
-	if (ip)
-		region = vmod_region_name_by_addr((GeoIP *)pp->priv, ip);
-
-	return (WS_Copy(ctx->ws, (region ? region : GI_UNKNOWN_STRING), -1));
-}
-
-VCL_STRING
-vmod_ip_region_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
-    VCL_IP ip)
-{
-	return (vmod_region_name(ctx, pp, VRT_IP_string(ctx, ip)));
-}
+#define GEOIP_PROPERTY(prop, func)					\
+	VCL_STRING							\
+	vmod_##prop(VRT_CTX, struct vmod_priv *pp, VCL_STRING ip)	\
+	{								\
+		const char *str = NULL;					\
+									\
+		CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);			\
+		CHECK_OBJ_NOTNULL(ctx->ws, WS_MAGIC);			\
+		AN(pp->priv);						\
+									\
+		if (ip)							\
+			str = func(pp->priv, ip);			\
+		if (str == NULL)					\
+			return ("Unknown");				\
+		return (WS_Copy(ctx->ws, str, -1));			\
+	}								\
+									\
+	VCL_STRING							\
+	vmod_ip_##prop(VRT_CTX, struct vmod_priv *pp, VCL_IP ip)	\
+	{								\
+									\
+		return (vmod_##prop(ctx, pp, VRT_IP_string(ctx, ip)));	\
+	}
+GEOIP_PROPERTY(country_code, GeoIP_country_code_by_addr);
+GEOIP_PROPERTY(country_name, GeoIP_country_name_by_addr);
+GEOIP_PROPERTY(region_name, vmod_region_name_by_addr);
+#undef GEOIP_PROPERTY
