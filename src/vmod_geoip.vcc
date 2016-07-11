@@ -1,5 +1,7 @@
 $Module geoip 3
 
+$Event vmod_event
+
 ## look up two-letter country codes
 $Function STRING country_code(PRIV_VCL, STRING)
 #$Function STRING ip_country_code(PRIV_VCL, IP)

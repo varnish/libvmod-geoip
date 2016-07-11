@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <GeoIP.h>
 
+#include "vcl.h"
 #include "vrt.h"
 #include "vrt_obj.h"
 #include "cache/cache.h"
@@ -31,14 +32,26 @@ init_priv(struct vmod_priv *pp)
 	GeoIP_set_charset((GeoIP *)pp->priv, GEOIP_CHARSET_UTF8);
 }
 
+int __match_proto__(vmod_event_f)
+vmod_event(VRT_CTX, struct vmod_priv *pp, enum vcl_event_e evt)
+{
+
+	(void)ctx;
+	(void)evt;
+
+	if (!pp->priv)
+		init_priv(pp);
+
+	return (0);
+}
+
 VCL_STRING
 vmod_country_code(const struct vrt_ctx *ctx, struct vmod_priv *pp,
     VCL_STRING ip)
 {
 	const char *country = NULL;
 
-	if (!pp->priv)
-		init_priv(pp);
+	AN(pp->priv);
 
 	if (ip)
 		country = GeoIP_country_code_by_addr((GeoIP *)pp->priv, ip);
@@ -59,8 +72,7 @@ vmod_country_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
 {
 	const char *country = NULL;
 
-	if (!pp->priv)
-		init_priv(pp);
+	AN(pp->priv);
 
 	if (ip)
 		country = GeoIP_country_name_by_addr((GeoIP *)pp->priv, ip);
@@ -82,8 +94,7 @@ vmod_region_name(const struct vrt_ctx *ctx, struct vmod_priv *pp,
 	GeoIPRegion *gir;
 	const char *region = NULL;
 
-	if (!pp->priv)
-		init_priv(pp);
+	AN(pp->priv);
 
 	if (ip) {
 		if ((gir = GeoIP_region_by_addr((GeoIP *)pp->priv, ip))) {
