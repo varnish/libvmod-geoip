@@ -1,4 +1,4 @@
-varnishtest "Test geoip vmod"
+varnishtest "Test an unknown IP address"
 
 server s1 {
 	rxreq
@@ -9,12 +9,14 @@ varnish v1 -vcl+backend {
 	import geoip from "${vmod_topbuild}/src/.libs/libvmod_geoip.so";
 
 	sub vcl_deliver {
-		set resp.http.X-Country-Code = geoip.country_code("85.10.240.255");
+		set resp.http.X-Country-Code = geoip.country_code("127.0.0.1");
+		set resp.http.X-Country-Name = geoip.country_name("127.0.0.1");
 	}
 } -start
 
 client c1 {
 	txreq -url "/"
 	rxresp
-	expect resp.http.X-Country-Code == "DE"
+	expect resp.http.X-Country-Code == Unknown
+	expect resp.http.X-Country-Name == Unknown
 } -run
