@@ -68,13 +68,6 @@ vmod_region_name_by_addr(GeoIP *gi, const char *ip)
 		if (str == NULL)					\
 			return ("Unknown");				\
 		return (WS_Copy(ctx->ws, str, -1));			\
-	}								\
-									\
-	VCL_STRING							\
-	vmod_ip_##prop(VRT_CTX, struct vmod_priv *pp, VCL_IP ip)	\
-	{								\
-									\
-		return (vmod_##prop(ctx, pp, VRT_IP_string(ctx, ip)));	\
 	}
 GEOIP_PROPERTY(country_code, GeoIP_country_code_by_addr);
 GEOIP_PROPERTY(country_name, GeoIP_country_name_by_addr);

@@ -4,12 +4,9 @@ $Init vmod_init
 
 ## look up two-letter country codes
 $Function STRING country_code(PRIV_VCL, STRING)
-#$Function STRING ip_country_code(PRIV_VCL, IP)
 
 ## look up (english) country names
 $Function STRING country_name(PRIV_VCL, STRING)
-#$Function STRING ip_country_name(PRIV_VCL, IP)
 
 ## look up (english) region names
 #$Function STRING region_name(PRIV_VCL, STRING)
-##$Function STRING ip_region_name(PRIV_VCL, IP)
