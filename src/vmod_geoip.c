@@ -60,14 +60,13 @@ vmod_region_name_by_addr(GeoIP *gi, const char *ip)
 		const char *str = NULL;					\
 									\
 		CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);			\
-		CHECK_OBJ_NOTNULL(ctx->ws, WS_MAGIC);			\
 		AN(pp->priv);						\
 									\
 		if (ip)							\
 			str = func(pp->priv, ip);			\
 		if (str == NULL)					\
-			return ("Unknown");				\
-		return (WS_Copy(ctx->ws, str, -1));			\
+			str = "Unknown";				\
+		return (str);						\
 	}
 GEOIP_PROPERTY(country_code, GeoIP_country_code_by_addr);
 GEOIP_PROPERTY(country_name, GeoIP_country_name_by_addr);
