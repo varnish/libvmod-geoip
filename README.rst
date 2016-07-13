@@ -150,6 +150,6 @@ Usage::
 Make targets:
 
 * make - builds the vmod
-* make install - installs your vmod
+* sudo make install - installs your vmod
 * make check - runs the unit tests in ``src/tests/*.vtc``
 
