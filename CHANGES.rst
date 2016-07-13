@@ -1,6 +1,17 @@
 
 This is a running log of changes to libvmod-geoip.
 
+libvmod-geoip 1.0.2 (2016-07-13)
+--------------------------------
+
+* Safe initalization of libGeoIP (#2).
+
+* Separate maintenance branch for Varnish 4.0.
+
+* Removal of disabled IP variants of the functions.
+
+This release was tested with Varnish Cache 4.1.3.
+
 libvmod-geoip 1.0.1 (2016-03-14)
 --------------------------------
 
@@ -22,4 +33,3 @@ This is libvmod-geoip, originally written by Hauke Lampe.
 Source code: https://github.com/lampeh/libvmod-geoip
 
 This release was made before the introduction of the changes file.
-
