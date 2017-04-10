@@ -134,6 +134,10 @@ The source tree is based on autotools to configure the building, and
 does also have the necessary bits in place to do functional unit tests
 using the varnishtest tool.
 
+It is a prerequisite that you have the varnish-dev package installed as well as varnish::
+
+ apt-get install varnishdev
+
 Install the GeoIP library headers::
 
  apt-get install libgeoip-dev
