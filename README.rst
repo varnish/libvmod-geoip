@@ -153,3 +153,12 @@ Make targets:
 * sudo make install - installs your vmod
 * make check - runs the unit tests in ``src/tests/*.vtc``
 
+KNOWN ISSUES
+============
+
+Certain versions of the GeoIP library will fail if the GeoIP database
+file is updated by overwriting the old file directly. 
+
+This could impact varnish stability, and it is therefore recommended
+to download the update as a new file, and then ``mv`` the new file
+onto the old active database.
