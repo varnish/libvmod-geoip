@@ -1,0 +1,18 @@
+Source: libvmod-geoip
+Section: web
+Priority: extra
+Maintainer: Varnish Software <support@varnish-software.com>
+Build-Depends: debhelper (>= 9),
+ build-essential,
+ pkg-config,
+ python-docutils,
+ libgeoip-dev,
+ varnish (>= 4.0.2),
+ libvarnishapi-dev (>= 4.0.2)
+Standards-Version: 3.9.2
+Vcs-Git: git://github.com/varnish/libvmod-geoip.git
+
+Package: libvmod-geoip
+Architecture: any
+Depends: varnish (>= 4.0.2), ${shlibs:Depends}, ${misc:Depends}, ${Varnish:ABI}
+Description: geoip vmod for Varnish

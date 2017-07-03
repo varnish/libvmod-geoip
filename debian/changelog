@@ -1,0 +1,6 @@
+libvmod-geoip (1.0.2) unstable; urgency=low
+
+  * Add debian packaging
+
+ -- Rick van de Loo <rickvandeloo@gmail.com>  Mon, 3 Jul 2017 09:36:57 +0100
+
