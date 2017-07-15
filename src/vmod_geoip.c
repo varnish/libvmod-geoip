@@ -17,6 +17,23 @@
 
 #include "vcc_if.h"
 
+typedef struct vmod_geoip_db_type {
+    GeoIP    *ipv4;
+    GeoIP    *ipv6;
+} GeoipDB;
+
+static void
+cleanup_db(GeoipDB *db)
+{
+	if (db->ipv4)
+		GeoIP_delete(db->ipv4);
+
+	if (db->ipv6)
+		GeoIP_delete(db->ipv6);
+
+	free(db);
+}
+
 int __match_proto__(vmod_event_f)
 vmod_event(VRT_CTX, struct vmod_priv *pp, enum vcl_event_e evt)
 {
@@ -31,22 +48,55 @@ vmod_event(VRT_CTX, struct vmod_priv *pp, enum vcl_event_e evt)
 		 * adding * the flag "MAP_32BIT" to the mmap call. MMAP is not
 		 * avail for WIN32.
 		 */
-		pp->priv = GeoIP_new(GEOIP_MMAP_CACHE);
+		pp->priv = malloc(sizeof(GeoipDB));
 		AN(pp->priv);
-		pp->free = (vmod_priv_free_f *)GeoIP_delete;
-		GeoIP_set_charset((GeoIP *)pp->priv, GEOIP_CHARSET_UTF8);
+
+		GeoipDB *db = (GeoipDB *)pp->priv;
+		db->ipv4 = 0;
+		db->ipv6 = 0;
+
+		pp->free = (vmod_priv_free_f *)cleanup_db;
+
+		db->ipv4 = GeoIP_open_type(GEOIP_COUNTRY_EDITION, GEOIP_MMAP_CACHE);
+		AN(db->ipv4);
+		GeoIP_set_charset(db->ipv4, GEOIP_CHARSET_UTF8);
+
+		db->ipv6 = GeoIP_open_type(GEOIP_COUNTRY_EDITION_V6, GEOIP_MMAP_CACHE);
+		AN(db->ipv6);
+		GeoIP_set_charset(db->ipv6, GEOIP_CHARSET_UTF8);
 	}
 
 	return (0);
 }
 
 static const char *
-vmod_region_name_by_addr(GeoIP *gi, const char *ip)
+vmod_country_code_by_addr(GeoipDB *gi, const char *ip)
+{
+	if (strchr(ip, ':') != NULL)
+		return GeoIP_country_code_by_addr_v6(gi->ipv6, ip);
+	else
+		return GeoIP_country_code_by_addr(gi->ipv4, ip);
+}
+
+static const char *
+vmod_country_name_by_addr(GeoipDB *gi, const char *ip)
+{
+	if (strchr(ip, ':') != NULL)
+		return GeoIP_country_name_by_addr_v6(gi->ipv6, ip);
+	else
+		return GeoIP_country_name_by_addr(gi->ipv4, ip);
+}
+
+static const char *
+vmod_region_name_by_addr(GeoipDB *gi, const char *ip)
 {
 	GeoIPRegion *gir;
 	const char *region = NULL;
 
-	gir = GeoIP_region_by_addr(gi, ip);
+	if (strchr(ip, ':') != NULL)
+		gir = GeoIP_region_by_addr_v6(gi->ipv6, ip);
+	else
+		gir = GeoIP_region_by_addr(gi->ipv4, ip);
 	if (gir == NULL)
 		return (NULL);
 
@@ -70,7 +120,7 @@ vmod_region_name_by_addr(GeoIP *gi, const char *ip)
 			str = "Unknown";				\
 		return (str);						\
 	}
-GEOIP_PROPERTY(country_code, GeoIP_country_code_by_addr);
-GEOIP_PROPERTY(country_name, GeoIP_country_name_by_addr);
+GEOIP_PROPERTY(country_code, vmod_country_code_by_addr);
+GEOIP_PROPERTY(country_name, vmod_country_name_by_addr);
 GEOIP_PROPERTY(region_name, vmod_region_name_by_addr);
 #undef GEOIP_PROPERTY
