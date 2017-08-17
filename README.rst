@@ -136,7 +136,7 @@ using the varnishtest tool.
 
 It is a prerequisite that you have the varnish-dev package installed as well as varnish::
 
- apt-get install varnishdev
+ apt-get install varnish-dev
 
 Install the GeoIP library headers::
 
