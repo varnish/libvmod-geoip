@@ -1,6 +1,17 @@
 
 This is a running log of changes to libvmod-geoip.
 
+libvmod-geoip 1.0.3 (2017-03-07)
+--------------------------------
+
+* Fix missing dependency in travis.
+
+* Update README.rst.
+
+* Add Varnish 6 support.
+
+This release was tested with Varnish Cache 4.1.9 and trunk (2018-03-07)
+
 libvmod-geoip 1.0.2 (2016-07-13)
 --------------------------------
 
