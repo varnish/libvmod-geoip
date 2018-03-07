@@ -8,7 +8,7 @@ Varnish GeoIP Lookup Module
 
 :Author: Hauke Lampe
 :Date: 2011-09-26
-:Version: 1.0
+:Version: 1.0.3
 :Manual section: 3
 
 SYNOPSIS
