@@ -1,5 +1,5 @@
 AC_PREREQ(2.64)
-AC_INIT([libvmod-geoip], [1.0.2+varnish4.1], [opensource@varnish-software.com], [libvmod-geoip])
+AC_INIT([libvmod-geoip], [1.0.3], [opensource@varnish-software.com], [libvmod-geoip])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR(src/vmod_geoip.vcc)
 AM_CONFIG_HEADER(config.h)
