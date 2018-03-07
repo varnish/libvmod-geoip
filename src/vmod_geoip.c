@@ -10,14 +10,22 @@
 #include <stdlib.h>
 #include <GeoIP.h>
 
-#include "vcl.h"
-#include "vrt.h"
+#include <cache/cache.h>
+
+#ifndef VRT_H_INCLUDED
+#  include <vrt.h>
+#endif
+
+#ifndef VDEF_H_INCLUDED
+#  include <vdef.h>
+#endif
+
+#include <vcl.h>
 #include "vrt_obj.h"
-#include "cache/cache.h"
 
 #include "vcc_if.h"
 
-int __match_proto__(vmod_event_f)
+int
 vmod_event(VRT_CTX, struct vmod_priv *pp, enum vcl_event_e evt)
 {
 
