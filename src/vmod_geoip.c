@@ -10,18 +10,12 @@
 #include <stdlib.h>
 #include <GeoIP.h>
 
-#include <cache/cache.h>
+#include "cache/cache.h"
+#include "vcl.h"
 
 #ifndef VRT_H_INCLUDED
-#  include <vrt.h>
+#include "vrt.h"
 #endif
-
-#ifndef VDEF_H_INCLUDED
-#  include <vdef.h>
-#endif
-
-#include <vcl.h>
-#include "vrt_obj.h"
 
 #include "vcc_if.h"
 
