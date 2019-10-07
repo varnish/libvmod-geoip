@@ -2,7 +2,7 @@
 vmod_geoip
 ==========
 
-**important note: this vmod is now obsolete (as libgeoip itself is) and won't receive update.**
+**important note: this vmod is now obsolete (as libgeoip itself is) and won't receive updates.**
 
 ---------------------------
 Varnish GeoIP Lookup Module
