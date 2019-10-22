@@ -28,7 +28,7 @@ Example::
 
 .. vcl-end
 
-$Event event
+$Event vmod_event
 
 ## look up two-letter country codes
 $Function STRING country_code(PRIV_VCL, STRING)
