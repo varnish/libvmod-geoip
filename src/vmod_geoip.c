@@ -19,10 +19,22 @@
 
 #include "vcc_if.h"
 
+
+void
+geoip_fini(VRT_CTX, void *priv) {
+	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
+
+	GeoIP_delete((struct GeoIPTag *)priv);
+}
+
+struct vmod_priv_methods methods = {
+	.magic = VMOD_PRIV_METHODS_MAGIC,
+	.fini = geoip_fini,
+};
+
 int
 vmod_event(VRT_CTX, struct vmod_priv *pp, enum vcl_event_e evt)
 {
-
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 
 	if (pp->priv == NULL) {
@@ -35,7 +47,7 @@ vmod_event(VRT_CTX, struct vmod_priv *pp, enum vcl_event_e evt)
 		 */
 		pp->priv = GeoIP_new(GEOIP_MMAP_CACHE);
 		AN(pp->priv);
-		pp->free = (vmod_priv_free_f *)GeoIP_delete;
+		pp->methods = &methods;
 		GeoIP_set_charset((GeoIP *)pp->priv, GEOIP_CHARSET_UTF8);
 	}
 
